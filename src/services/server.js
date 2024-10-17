@@ -11,7 +11,7 @@ class Server {
       const { data } = await axios.get(endpointDatabase);
       return data;
     } catch (error) {
-      console.log(colors.red("Lấy dữ liệu server zuydd thất bại"));
+      console.log(colors.red("Failed to retrieve data from server zuydd"));
       return null;
     }
   }
@@ -19,23 +19,23 @@ class Server {
   async showNoti() {
     const database = await this.getData();
     if (database && database.noti) {
-      console.log(colors.blue("📢 Thông báo từ hệ thống"));
+      console.log(colors.blue("📢 Notification from the system"));
       console.log(database.noti);
       console.log("");
     }
   }
 
-  async checkVersion(curentVersion, database = null) {
+  async checkVersion(currentVersion, database = null) {
     if (!database) {
       database = await this.getData();
     }
 
-    if (database && curentVersion !== database.ver) {
+    if (database && currentVersion !== database.ver) {
       console.log(
         colors.yellow(
-          `🚀 Đã có phiên bản mới ${colors.blue(
+          `🚀 A new version is available: ${colors.blue(
             database.ver
-          )}, tải ngay tại đây 👉 ${colors.blue(
+          )}, download it here 👉 ${colors.blue(
             "https://github.com/zuydd/blum"
           )}`
         )
