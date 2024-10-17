@@ -21,7 +21,7 @@ class TaskService {
       if (data?.length) {
         return data;
       } else {
-        throw new Error(`Lấy danh sách nhiệm vụ thất bại: ${data?.message}`);
+        throw new Error(`Failed to retrieve task list: ${data?.message}`);
       }
     } catch (error) {
       return -1;
@@ -42,27 +42,28 @@ class TaskService {
           : "READY_FOR_CLAIM";
       } else {
         throw new Error(
-          `Làm nhiệm vụ ${colors.blue(taskName)} thất bại: ${data?.message}`
+          `Failed to start task ${colors.blue(taskName)}: ${data?.message}`
         );
       }
     } catch (error) {
       user.log.logError(
-        `Làm nhiệm vụ ${colors.blue(taskName)} - ${colors.gray(
+        `Failed to start task ${colors.blue(taskName)} - ${colors.gray(
           `[${task.id}]`
-        )} thất bại: ${error.response?.data?.message}`
+        )}: ${error.response?.data?.message}`
       );
       return "NOT_STARTED";
     }
   }
+
   async verifyTask(user, task) {
     let taskName = task.title;
     const param = `tasks/${task.id}/validate`;
     if (!user?.database?.tasks) {
       user.log.log(
         colors.yellow(
-          `Nhiệm vụ ${colors.blue(
+          `Task ${colors.blue(
             taskName
-          )} chưa có câu trả lời, chờ làm lại sau`
+          )} has no answer yet, please try again later`
         )
       );
       return;
@@ -71,9 +72,9 @@ class TaskService {
     if (!taskDatabase) {
       user.log.log(
         colors.yellow(
-          `Nhiệm vụ ${colors.blue(
+          `Task ${colors.blue(
             taskName
-          )} chưa có câu trả lời, chờ làm lại sau`
+          )} has no answer yet, please try again later`
         )
       );
       return;
@@ -86,16 +87,14 @@ class TaskService {
         return "READY_FOR_CLAIM";
       } else {
         throw new Error(
-          `Xác nhận nhiệm vụ ${colors.blue(taskName)} thất bại: ${
-            data?.message
-          }`
+          `Failed to verify task ${colors.blue(taskName)}: ${data?.message}`
         );
       }
     } catch (error) {
       user.log.logError(
-        `Xác nhận nhiệm vụ ${colors.blue(taskName)} - ${colors.gray(
+        `Failed to verify task ${colors.blue(taskName)} - ${colors.gray(
           `[${task.id}]`
-        )} thất bại: ${error.response?.data?.message}`
+        )}: ${error.response?.data?.message}`
       );
       return "NOT_STARTED";
     }
@@ -112,9 +111,9 @@ class TaskService {
       if (data && data.status === "FINISHED") {
         if (showLog) {
           user.log.log(
-            `Làm nhiệm vụ ${colors.blue(
+            `Successfully completed task ${colors.blue(
               taskName
-            )} thành công, phần thưởng: ${colors.green(
+            )}, reward: ${colors.green(
               task.reward + user.currency
             )}`
           );
@@ -122,17 +121,15 @@ class TaskService {
         return true;
       } else {
         throw new Error(
-          `Claim phần thưởng nhiệm vụ ${colors.blue(taskName)} thất bại: ${
-            data?.message
-          }`
+          `Failed to claim reward for task ${colors.blue(taskName)}: ${data?.message}`
         );
       }
     } catch (error) {
       if (showLog) {
         user.log.logError(
-          `Claim phần thưởng nhiệm vụ ${colors.blue(taskName)} - ${colors.gray(
+          `Failed to claim reward for task ${colors.blue(taskName)} - ${colors.gray(
             `[${task.id}]`
-          )} thất bại: ${error.response?.data?.message}`
+          )}: ${error.response?.data?.message}`
         );
       }
       return false;
@@ -161,16 +158,16 @@ class TaskService {
 
     if (taskList.length) {
       user.log.log(
-        `Còn ${colors.blue(taskList.length)} nhiệm vụ ${colors.blue(
+        `There are ${colors.blue(taskList.length)} tasks ${colors.blue(
           title
-        )} chưa hoàn thành`
+        )} still incomplete`
       );
     } else {
       user.log.log(
         colors.magenta(
-          `Đã làm hết các nhiệm vụ ${colors.blue(
+          `All tasks ${colors.blue(
             title
-          )} (trừ các nhiệm phải làm tay bị bỏ qua)`
+          )} are complete (except skipped manual tasks)`
         )
       );
     }
@@ -199,25 +196,25 @@ class TaskService {
 
     if (tasksFilter.length) {
       user.log.log(
-        `Còn ${colors.blue(tasksFilter.length)} nhiệm vụ ${colors.blue(
+        `There are ${colors.blue(tasksFilter.length)} tasks ${colors.blue(
           title
-        )} chưa hoàn thành`
+        )} still incomplete`
       );
     } else {
       user.log.log(
         colors.magenta(
-          `Đã làm hết các nhiệm vụ ${colors.blue(
+          `All tasks ${colors.blue(
             title
-          )} (trừ các nhiệm phải làm tay bị bỏ qua)`
+          )} are complete (except skipped manual tasks)`
         )
       );
     }
 
     for (const taskParent of tasksFilter) {
       user.log.log(
-        `Bắt đầu làm nhiệm vụ ${colors.blue(
+        `Starting task ${colors.blue(
           taskParent.title
-        )}, chờ hoàn thành hết các nhiệm vụ con để nhận thưởng`
+        )}, waiting for all sub-tasks to complete to claim reward`
       );
 
       if (!taskParent?.subTasks) {
@@ -232,17 +229,17 @@ class TaskService {
           // await this.claimTask(user, taskParent);
           user.log.log(
             colors.magenta(
-              `Đã làm hết các nhiệm vụ ${colors.blue(
+              `Completed all tasks ${colors.blue(
                 taskParent.title
-              )} (trừ các nhiệm phải làm tay bị bỏ qua)`
+              )} (except skipped manual tasks)`
             )
           );
         } else {
           user.log.log(
             colors.yellow(
-              `Chưa hoàn thành hết các nhiệm vụ con của task ${colors.blue(
+              `Not all sub-tasks of task ${colors.blue(
                 taskParent.title
-              )}`
+              )} are complete`
             )
           );
         }
@@ -275,7 +272,7 @@ class TaskService {
     }
 
     if (tasksErrorStart.length || tasksErrorClaim.length) {
-      user.log.log(colors.magenta("Chạy lại các nhiệm vụ bị lỗi..."));
+      user.log.log(colors.magenta("Retrying failed tasks..."));
       for (const task of tasksErrorStart) {
         let complete = task.status;
         if (complete === "NOT_STARTED" && task.type !== "PROGRESS_TARGET") {
@@ -301,7 +298,7 @@ class TaskService {
       if (complete === "FINISHED") {
         countDone++;
         user.log.log(
-          `✔️ Đã hoàn thành nhiệm vụ ${colors.blue(
+          `✔️ Completed task ${colors.blue(
             nameTaskParent + " --> " + task.title
           )}`
         );
@@ -319,15 +316,15 @@ class TaskService {
         if (statusClaim) {
           countDone++;
           user.log.log(
-            `✔️ Đã hoàn thành nhiệm vụ ${colors.blue(
+            `✔️ Completed task ${colors.blue(
               nameTaskParent + " --> " + task.title
             )}`
           );
         } else {
           user.log.logError(
-            `❌ Làm nhiệm vụ ${colors.blue(
+            `❌ Failed to complete task ${colors.blue(
               nameTaskParent + " --> " + task.title
-            )} thất bại`
+            )}`
           );
         }
       }
@@ -346,7 +343,7 @@ class TaskService {
     }
 
     if (countGetTask > maxRetryGetTask) {
-      user.log.logError(`Lấy danh sách nhiệm vụ thất bại`);
+      user.log.logError(`Failed to retrieve task list`);
       return;
     }
 
@@ -358,7 +355,7 @@ class TaskService {
       }
     }
 
-    user.log.log(colors.magenta("Đã làm hết nhiệm vụ"));
+    user.log.log(colors.magenta("All tasks completed"));
   }
 }
 
