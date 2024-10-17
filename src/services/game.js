@@ -6,7 +6,6 @@ import utc from "dayjs/plugin/utc.js";
 import delayHelper from "../helpers/delay.js";
 import generatorHelper from "../helpers/generator.js";
 import authService from "./auth.js";
-
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -19,20 +18,20 @@ class GameService {
 
       if (data) {
         user.log.log(
-          `Starting game, ending and receiving reward after: ${colors.blue(
+          `Started playing the game, rewards will be received after: ${colors.blue(
             delay + "s"
           )}`
         );
         return data.gameId;
       } else {
-        throw new Error(`Game play failed: ${data.message}`);
+        throw new Error(`Game failed: ${data.message}`);
       }
     } catch (error) {
       if (error.response?.data?.message === "not enough play passes") {
-        return 2; // Not enough play passes
+        return 2;
       } else {
         user.log.logError(
-          `Game play failed: ${error.response?.data?.message}`
+          `Game failed: ${error.response?.data?.message}`
         );
       }
       return null;
@@ -40,7 +39,7 @@ class GameService {
   }
 
   async claimGame(user, gameId, eligibleDogs) {
-    let points = generatorHelper.randomInt(180, 220);
+    let points = generatorHelper.randomInt(180, 200);
     let dogs = 0;
     if (eligibleDogs) {
       points = generatorHelper.randomInt(90, 110);
@@ -55,17 +54,17 @@ class GameService {
       const { data } = await user.http.post(5, "game/claim", body);
       if (data) {
         user.log.log(
-          `Game finished, reward: ${colors.green(
+          `Game finished, rewards: ${colors.green(
             points + user.currency
           )}${eligibleDogs ? ` - ${dogs} 🦴` : ""}`
         );
         return true;
       } else {
-        throw new Error(`Claim game reward failed: ${data.message}`);
+        throw new Error(`Game reward claim failed: ${data.message}`);
       }
     } catch (error) {
       user.log.logError(
-        `Claim game reward failed: ${error.response?.data?.message}`
+        `Game reward claim failed: ${error.response?.data?.message}`
       );
       return false;
     }
@@ -106,47 +105,30 @@ class GameService {
   }
 
   checkTimePlayGame(time) {
-    // Get the current time in Vietnam timezone (UTC+7)
-    const now = dayjs().tz("Asia/Ho_Chi_Minh");
-
-    // Create a dayjs object for start and end times based on the current day
-    const startTime = dayjs()
-      .tz("Asia/Ho_Chi_Minh")
-      .hour(time[0])
-      .minute(0)
-      .second(0);
-    const endTime = dayjs()
-      .tz("Asia/Ho_Chi_Minh")
-      .hour(time[1])
-      .minute(0)
-      .second(0);
-
-    // Adjust if the end time is before midnight
-    if (endTime.isBefore(startTime)) {
-      endTime.add(1, "day");
-    }
-
-    // Check if the current time is within the specified time range
-    return now.isAfter(startTime) && now.isBefore(endTime);
+    // Get current hour in Vietnam timezone (UTC+7)
+    const nowHour = dayjs().hour();
+    return !time.includes(nowHour);
   }
 
-  getMinutesUntilNextStart(time) {
-    // Get the current time in Vietnam timezone (UTC+7)
-    const now = dayjs().tz("Asia/Ho_Chi_Minh");
+  getMinutesUntilNextStart(times) {
+    // Get current hour in Vietnam timezone (UTC+7)
+    const currentHour = dayjs().hour();
+    times.sort((a, b) => a - b);
 
-    // Create a dayjs object for the next start time
-    let nextStartTime = dayjs()
-      .tz("Asia/Ho_Chi_Minh")
-      .hour(time[0])
-      .minute(0)
-      .second(0);
+    let nextHour = currentHour + 1;
 
-    // If current time is past the start time, set the next start time to tomorrow
-    if (now.isAfter(nextStartTime)) {
-      nextStartTime = nextStartTime.add(1, "day");
+    while (times.includes(nextHour)) {
+      nextHour++;
     }
 
-    // Calculate minutes until the next start time
+    const now = dayjs();
+
+    const nextStartTime = now
+      .set("hour", nextHour)
+      .set("minute", 0)
+      .set("second", 0);
+
+    // Calculate minutes from current time to the next game start
     return nextStartTime.diff(now, "minute");
   }
 
@@ -157,9 +139,9 @@ class GameService {
       if (profile) playPasses = profile?.playPasses;
       const eligibleDogs = await this.eligibilityDogs(user);
       const textDropDogs =
-        (eligibleDogs ? "can" : "cannot") + " pick up DOGS 🦴";
+        (eligibleDogs ? "can" : "cannot") + " collect DOGS 🦴";
       user.log.log(
-        `Remaining ${colors.blue(playPasses + " passes")} to play the game ${colors.magenta(
+        `Remaining ${colors.blue(playPasses + " game plays")} ${colors.magenta(
           `[${textDropDogs}]`
         )}`
       );
@@ -188,15 +170,13 @@ class GameService {
         }
       }
       if (playPasses > 0)
-        user.log.log(colors.magenta("All game passes have been used"));
+        user.log.log(colors.magenta("All game plays used up"));
       return -1;
     } else {
       const minutesUntilNextStart = this.getMinutesUntilNextStart(timePlayGame);
       user.log.log(
         colors.yellow(
-          `Cannot play the game outside the time range from ${timePlayGame[0]}-${
-            timePlayGame[1]
-          } hours, next play after: ${colors.blue(
+          `Game cannot be played during this time, next play in: ${colors.blue(
             minutesUntilNextStart + " minutes"
           )}`
         )
