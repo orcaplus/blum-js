@@ -11,8 +11,8 @@ class FileHelper {
 
     const filePath = path.join(__dirname, "..", "data", fileName);
 
-    const datas = fs.readFileSync(filePath, "utf8");
-    return datas;
+    const data = fs.readFileSync(filePath, "utf8");
+    return data;
   }
 
   writeFile(fileName, data) {
