@@ -6,6 +6,7 @@ import utc from "dayjs/plugin/utc.js";
 import delayHelper from "../helpers/delay.js";
 import generatorHelper from "../helpers/generator.js";
 import authService from "./auth.js";
+
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -18,20 +19,20 @@ class GameService {
 
       if (data) {
         user.log.log(
-          `Bắt đầu chơi game, kết thúc và nhận thưởng sau: ${colors.blue(
+          `Starting game, ending and receiving reward after: ${colors.blue(
             delay + "s"
           )}`
         );
         return data.gameId;
       } else {
-        throw new Error(`Chơi game thất bại: ${data.message}`);
+        throw new Error(`Game play failed: ${data.message}`);
       }
     } catch (error) {
       if (error.response?.data?.message === "not enough play passes") {
-        return 2;
+        return 2; // Not enough play passes
       } else {
         user.log.logError(
-          `Chơi game thất bại: ${error.response?.data?.message}`
+          `Game play failed: ${error.response?.data?.message}`
         );
       }
       return null;
@@ -54,17 +55,17 @@ class GameService {
       const { data } = await user.http.post(5, "game/claim", body);
       if (data) {
         user.log.log(
-          `Chơi game xong, phần thưởng: ${colors.green(
+          `Game finished, reward: ${colors.green(
             points + user.currency
           )}${eligibleDogs ? ` - ${dogs} 🦴` : ""}`
         );
         return true;
       } else {
-        throw new Error(`Nhận thưởng chơi game thất bại: ${data.message}`);
+        throw new Error(`Claim game reward failed: ${data.message}`);
       }
     } catch (error) {
       user.log.logError(
-        `Nhận thưởng chơi game thất bại: ${error.response?.data?.message}`
+        `Claim game reward failed: ${error.response?.data?.message}`
       );
       return false;
     }
@@ -88,7 +89,7 @@ class GameService {
       });
 
       if (data.payload) return data.payload;
-      throw new Error(`Tạo payload thất bại: ${data?.error}`);
+      throw new Error(`Payload creation failed: ${data?.error}`);
     } catch (error) {
       console.log(colors.red(error.response.data.error));
       return null;
@@ -105,10 +106,10 @@ class GameService {
   }
 
   checkTimePlayGame(time) {
-    // Lấy giờ hiện tại theo múi giờ Việt Nam (UTC+7)
+    // Get the current time in Vietnam timezone (UTC+7)
     const now = dayjs().tz("Asia/Ho_Chi_Minh");
 
-    // Tạo đối tượng dayjs cho giờ bắt đầu và kết thúc theo ngày hiện tại
+    // Create a dayjs object for start and end times based on the current day
     const startTime = dayjs()
       .tz("Asia/Ho_Chi_Minh")
       .hour(time[0])
@@ -120,32 +121,32 @@ class GameService {
       .minute(0)
       .second(0);
 
-    // Kiểm tra nếu giờ kết thúc là sau nửa đêm, cần điều chỉnh sang ngày hôm sau
+    // Adjust if the end time is before midnight
     if (endTime.isBefore(startTime)) {
       endTime.add(1, "day");
     }
 
-    // Kiểm tra xem giờ hiện tại có nằm trong khoảng giờ không
+    // Check if the current time is within the specified time range
     return now.isAfter(startTime) && now.isBefore(endTime);
   }
 
   getMinutesUntilNextStart(time) {
-    // Lấy giờ hiện tại theo múi giờ Việt Nam (UTC+7)
+    // Get the current time in Vietnam timezone (UTC+7)
     const now = dayjs().tz("Asia/Ho_Chi_Minh");
 
-    // Tạo đối tượng dayjs cho giờ bắt đầu (17h hôm nay)
+    // Create a dayjs object for the next start time
     let nextStartTime = dayjs()
       .tz("Asia/Ho_Chi_Minh")
       .hour(time[0])
       .minute(0)
       .second(0);
 
-    // Kiểm tra nếu giờ hiện tại đã qua giờ bắt đầu (17h), chuyển giờ bắt đầu sang ngày hôm sau
+    // If current time is past the start time, set the next start time to tomorrow
     if (now.isAfter(nextStartTime)) {
       nextStartTime = nextStartTime.add(1, "day");
     }
 
-    // Tính số phút từ giờ hiện tại đến lần bắt đầu tiếp theo
+    // Calculate minutes until the next start time
     return nextStartTime.diff(now, "minute");
   }
 
@@ -156,9 +157,9 @@ class GameService {
       if (profile) playPasses = profile?.playPasses;
       const eligibleDogs = await this.eligibilityDogs(user);
       const textDropDogs =
-        (eligibleDogs ? "có thể" : "không thể") + " nhặt DOGS 🦴";
+        (eligibleDogs ? "can" : "cannot") + " pick up DOGS 🦴";
       user.log.log(
-        `Còn ${colors.blue(playPasses + " lượt")} chơi game ${colors.magenta(
+        `Remaining ${colors.blue(playPasses + " passes")} to play the game ${colors.magenta(
           `[${textDropDogs}]`
         )}`
       );
@@ -187,16 +188,16 @@ class GameService {
         }
       }
       if (playPasses > 0)
-        user.log.log(colors.magenta("Đã dùng hết lượt chơi game"));
+        user.log.log(colors.magenta("All game passes have been used"));
       return -1;
     } else {
       const minutesUntilNextStart = this.getMinutesUntilNextStart(timePlayGame);
       user.log.log(
         colors.yellow(
-          `Không thể chơi game ngoài khoảng thời gian từ ${timePlayGame[0]}-${
+          `Cannot play the game outside the time range from ${timePlayGame[0]}-${
             timePlayGame[1]
-          } giờ, lần chơi tiếp theo sau: ${colors.blue(
-            minutesUntilNextStart + " phút"
+          } hours, next play after: ${colors.blue(
+            minutesUntilNextStart + " minutes"
           )}`
         )
       );
