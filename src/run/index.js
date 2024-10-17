@@ -15,15 +15,15 @@ import tribeService from "../services/tribe.js";
 import userService from "../services/user.js";
 
 const VERSION = "v0.1.6";
-// Điều chỉnh khoảng cách thời gian chạy vòng lặp đầu tiên giữa các luồng tránh bị spam request (tính bằng giây)
+// Adjust the delay time for the first loop between threads to avoid spam requests (in seconds)
 const DELAY_ACC = 10;
-// Đặt số lần thử kết nối lại tối đa khi proxy lỗi, nếu thử lại quá số lần cài đặt sẽ dừng chạy tài khoản đó và ghi lỗi vào file log
+// Set the maximum number of retry attempts for reconnecting when the proxy fails. If the retry exceeds the limit, the account will stop running and log the error to a file.
 const MAX_RETRY_PROXY = 20;
-// Đặt số lần thử đăng nhập tối đa khi đăng nhập lỗi, nếu thử lại quá số lần cài đặt sẽ dừng chạy tài khoản đó và ghi lỗi vào file log
+// Set the maximum number of retry attempts for login when the login fails. If the retry exceeds the limit, the account will stop running and log the error to a file.
 const MAX_RETRY_LOGIN = 20;
-// Cài đặt thời gian chơi game tránh những khoảng thời gian lỗi server. Tính theo giờ Việt Nam (UTC+7)
+// Configure play time for the game to avoid server downtime. Based on Vietnam time (UTC+7)
 const TIME_PLAY_GAME = [1, 13];
-// Cài đặt đếm ngược đến lần chạy tiếp theo
+// Configure countdown to the next run
 const IS_SHOW_COUNTDOWN = true;
 const countdownList = [];
 
@@ -41,19 +41,19 @@ const run = async (user, index) => {
   let countRetryLogin = 0;
   await delayHelper.delay((user.index - 1) * DELAY_ACC);
   while (true) {
-    // Lấy lại dữ liệu từ server zuydd
+    // Retrieve data from the server
     if (database?.ref) {
       user.database = database;
     }
 
     countdownList[index].running = true;
-    // Kiểm tra kết nối proxy
+    // Check proxy connection
     let isProxyConnected = false;
     while (!isProxyConnected) {
       const ip = await user.http.checkProxyIP();
       if (ip === -1) {
         user.log.logError(
-          "Proxy lỗi, kiểm tra lại kết nối proxy, sẽ thử kết nối lại sau 30s"
+          "Proxy error, checking proxy connection, will try to reconnect in 30s"
         );
         countRetryProxy++;
         if (countRetryProxy >= MAX_RETRY_PROXY) {
@@ -72,7 +72,7 @@ const run = async (user, index) => {
           user.info.id
         } _ Time: ${dayjs().format(
           "YYYY-MM-DDTHH:mm:ssZ[Z]"
-        )}] Lỗi kết nối proxy - ${user.proxy}`;
+        )}] Proxy connection error - ${user.proxy}`;
         fileHelper.writeLog("log.error.txt", dataLog);
         break;
       }
@@ -82,15 +82,15 @@ const run = async (user, index) => {
           user.info.id
         } _ Time: ${dayjs().format(
           "YYYY-MM-DDTHH:mm:ssZ[Z]"
-        )}] Lỗi đăng nhập thất bại quá ${MAX_RETRY_LOGIN} lần`;
+        )}] Failed to log in after ${MAX_RETRY_LOGIN} attempts`;
         fileHelper.writeLog("log.error.txt", dataLog);
         break;
       }
     } catch (error) {
-      user.log.logError("Ghi lỗi thất bại");
+      user.log.logError("Failed to log the error");
     }
 
-    // Đăng nhập tài khoản
+    // Log into the account
     const login = await authService.handleLogin(user);
     if (!login.status) {
       countRetryLogin++;
@@ -105,7 +105,7 @@ const run = async (user, index) => {
     if (user.database?.skipHandleTask) {
       user.log.log(
         colors.yellow(
-          `Tạm bỏ qua làm nhiệm vụ do lỗi server (sẽ tự động mở lại khi server ổn định)`
+          `Temporarily skipping tasks due to server error (will automatically resume when the server is stable)`
         )
       );
     } else {
@@ -139,11 +139,11 @@ const run = async (user, index) => {
 
 console.log(
   colors.yellow.bold(
-    `=============  Tool phát triển và chia sẻ miễn phí bởi ZuyDD  =============`
+    `=============  Tool developed and shared for free by ZuyDD  =============`
   )
 );
 console.log(
-  "Mọi hành vi buôn bán tool dưới bất cứ hình thức nào đều không được cho phép!"
+  "Any trading of the tool in any form is not permitted!"
 );
 console.log(
   `Telegram: ${colors.green(
@@ -151,7 +151,7 @@ console.log(
   )}  ___  Facebook: ${colors.blue("https://www.facebook.com/zuy.dd")}`
 );
 console.log(
-  `🚀 Cập nhật các tool mới nhất tại: 👉 ${colors.gray(
+  `🚀 Get the latest tools at: 👉 ${colors.gray(
     "https://github.com/zuydd"
   )} 👈`
 );
@@ -186,7 +186,7 @@ if (IS_SHOW_COUNTDOWN && users.length) {
         isLog = true;
       }
       const minTimeCountdown = countdownList.reduce((minItem, currentItem) => {
-        // bù trừ chênh lệch
+        // Calculate offset difference
         const currentOffset = dayjs().unix() - currentItem.created;
         const minOffset = dayjs().unix() - minItem.created;
         return currentItem.time - currentOffset < minItem.time - minOffset
@@ -200,7 +200,7 @@ if (IS_SHOW_COUNTDOWN && users.length) {
         colors.white(
           `[${dayjs().format(
             "DD-MM-YYYY HH:mm:ss"
-          )}] Đã chạy hết các luồng, cần chờ: ${colors.blue(
+          )}] All threads have finished running, need to wait: ${colors.blue(
             datetimeHelper.formatTime(countdown)
           )}     \r`
         )
@@ -212,9 +212,9 @@ if (IS_SHOW_COUNTDOWN && users.length) {
 
   process.on("SIGINT", () => {
     console.log("");
-    process.stdout.write("\x1b[K"); // Xóa dòng hiện tại từ con trỏ đến cuối dòng
-    process.exit(); // Thoát khỏi quá trình
+    process.stdout.write("\x1b[K"); // Clear the current line from the cursor to the end of the line
+    process.exit(); // Exit the process
   });
 }
 
-setInterval(() => {}, 1000); // Để script không kết thúc ngay
+setInterval(() => {}, 1000); // Keep the script from exiting immediately
