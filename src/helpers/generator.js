@@ -6,9 +6,9 @@ class GeneratorHelper {
   }
 
   uuid() {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (ue) => {
-      const Yi = (Math.random() * 16) | 0; // Tạo số ngẫu nhiên từ 0 đến 15 (số thập lục phân)
-      return (ue === "x" ? Yi : (Yi & 3) | 8).toString(16); // Chuyển đổi số ngẫu nhiên thành chữ cái thập lục phân (hex)
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (char) => {
+      const randomHex = (Math.random() * 16) | 0; // Generate a random number from 0 to 15 (hexadecimal)
+      return (char === "x" ? randomHex : (randomHex & 3) | 8).toString(16); // Convert the random number to a hexadecimal character
     });
   }
 }
