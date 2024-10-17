@@ -22,7 +22,7 @@ const MAX_RETRY_PROXY = 20;
 // Set the maximum number of retry attempts for login when the login fails. If the retry exceeds the limit, the account will stop running and log the error to a file.
 const MAX_RETRY_LOGIN = 20;
 // Configure play time for the game to avoid server downtime. Based on Vietnam time (UTC+7)
-const TIME_PLAY_GAME = [1, 13];
+const TIME_PLAY_GAME = [1, 23];
 // Configure countdown to the next run
 const IS_SHOW_COUNTDOWN = true;
 const countdownList = [];
