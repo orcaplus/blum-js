@@ -1,148 +1,148 @@
-Sure! Here’s the translated version of your text:
-
----
-
 ![Blum banner](https://raw.githubusercontent.com/zuydd/image/main/blum.jpeg)
 
 # Auto Blum NodeJS Tool by ZuyDD
 
-**Developed and shared for free by ZuyDD**
+**This tool is developed and shared for free by ZuyDD**
 
-<a href="https://www.facebook.com/zuy.dd"><img src="https://raw.githubusercontent.com/zuydd/image/main/facebook.svg" alt="Facebook"></a>
+<a href="https://www.facebook.com/zuy.dd"><img src="https://raw.githubusercontent.com/zuydd/image/main/facebook.svg" alt="Facebook"></a>  
 <a href="https://t.me/zuydd"><img src="https://raw.githubusercontent.com/zuydd/image/main/telegram.svg" alt="Telegram"></a>
 
-> [!WARNING]
-> Any trading of the tool in any form is not permitted!
+> [!WARNING]  
+> Selling this tool in any form is strictly prohibited!
 
 ## 🛠️ Installation Guide
 
-> Requires NodeJS installed
+> Requires NodeJS to be installed
 
 - Step 1: Download the latest version of the tool [here ⬇️](https://github.com/zuydd/blum/archive/refs/heads/main.zip)
-- Step 2: Unzip the tool
-- Step 3: In the unzipped tool folder (the folder containing the package.json file), run the command `npm install` to install the supporting libraries.
+- Step 2: Extract the tool
+- Step 3: In the extracted folder (the folder containing the `package.json` file), run the command `npm install` to install the necessary libraries
 
 ## 💾 How to Add Account Data
 
-> The tool supports both `user` and `query_id` (query_id is recommended)
+> The tool supports both `user` and `query_id`
 
-> All data you need to enter can be found in files in the 📁 `src/data` folder.
+> All the data you need to enter is located in the files within the 📁 `src / data` folder
 
-- [users.txt](src/data/users.txt): contains the list of `user` or `query_id` for accounts, one account per line.
-- [proxy.txt](src/data/proxy.txt): contains the list of proxies; each line corresponds to the account in the same line in the users.txt file above. Leave blank if not using a proxy.
-- [token.json](src/data/token.json): contains the list of tokens generated from `user` or `query_id`. Tokens will be automatically generated when you run the tool.
+- [users.txt](src/data/users.txt): contains the list of `users` or `query_id` for each account, one account per line
+- [proxy.txt](src/data/proxy.txt): contains the list of proxies, where each proxy corresponds to an account in the `users.txt` file. Leave blank if no proxy is needed
+- [token.json](src/data/token.json): contains the list of tokens generated from `user` or `query_id`. Tokens will be automatically generated when you run the tool
 
 > Proxy format: http://user:pass@ip:port
 
-## >\_ Commands and Corresponding Functions
+## >_ Commands and Corresponding Features
 
-| Command            | Function                                                                                                                  |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------- |
-| `npm run start`    | Used to run farming/claiming, completing tasks, checking in, playing games, claiming invite points, etc. Basically, it does whatever the game requires. |
+| Command          | Functionality                                                                                                                                       |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run start`  | Runs farming/claim, tasks, check-ins, games, claim invite points, etc.—everything the game offers, the tool will do                                  |
 
-## 🕹️ Features in the Tool
+## 🕹️ Features of the Tool
 
-- Automatically checks in daily
-- Automatically joins a tribe to receive an additional 10% reward points
-- Automatically completes tasks
-- Automatically farms/claims when the time comes
-- Automatically plays games
-- Claims invite points
-- Automatically detects proxies, reconnects when there's an error. If you’re using proxies, add them to the proxy.txt file corresponding to the line with the account you want to run with that proxy. Leave blank or type "skip" for accounts that don’t need a proxy.
-- Multi-threaded, can run as many accounts as you want without blocking each other.
-- Set game playing times; by default, it can play from 1 AM to 1 PM (Vietnam time UTC+7). You can find the variable `TIME_PLAY_GAME = [1, 13]` to change the playing hours.
+- Automatic daily check-in
+- Automatically join tribes for an extra 10% bonus points
+- Automatic task completion
+- Automatically farm/claim rewards at the right time
+- Automatic gameplay
+- Claim invite points
+- Automatically detect proxies and reconnect when there's an error. Add proxies to `proxy.txt` corresponding to the account, leave blank or write "skip" if no proxy is needed
+- Multi-threaded: run as many accounts as you like without blocking each other
+- Configure game playtime: by default, the tool always plays the game, but you can skip peak hours by setting the `TIME_PLAY_GAME = []` variable, e.g., `[1, 2, 3, 8, 20]` to skip gameplay during those hours
 
-> [!WARNING]
->
-> - If you encounter login, task completion, or gaming errors, it's due to the Blum server issues, not the tool's fault. Just wait for it to come back to normal.
-> - Since the server often has issues between 2 PM - 12 AM, it’s recommended to run the tool for the first time between 4 AM - 12 PM for smoother operation.
+> [!WARNING]  
+> - If you encounter login or task issues, it's likely the Blum server's fault, not the tool's. Just wait until the server is back online.
+> - Blum servers often fail between 2 PM to 12 AM, so it’s recommended to run the tool for the first time between 4 AM and 12 PM for smoother operation.
 
-## ♾ Multi-threaded Setup
+## ♾ Multi-Threading Setup
 
-- By default, the tool will run multi-threaded according to the number of accounts you enter, with no additional setup required.
-- In the first loop, each account (thread) will run 30 seconds apart to avoid spam requests. You can find the variable `DELAY_ACC = 10` in the [index.js](src/run/index.js) file to adjust as needed.
+- By default, the tool will run multiple threads corresponding to the number of accounts entered, no further setup is required.
+- In the first loop, each account (thread) will start 30 seconds apart to avoid request spamming. You can adjust this delay by modifying the `DELAY_ACC = 10` variable in the [index.js](src/run/index.js) file.
 
 ## ❌ Retry Mode on Errors
 
-- For proxy connection errors, the system will attempt to retry every 30 seconds. You can set the maximum retry limit by finding the variable `MAX_RETRY_PROXY = 20` in the [index.js](src/run/index.js) file to adjust as needed (default is 20). When the retry limit is exceeded, the system will stop auto for that account and log the error in the [log.error.txt](src/data/log.error.txt) file.
-- For failed login errors, the system will attempt to retry every 60 seconds. You can set the maximum retry limit by finding the variable `MAX_RETRY_LOGIN = 20` in the [index.js](src/run/index.js) file to adjust as needed (default is 20). When the retry limit is exceeded, the system will stop auto for that account and log the error in the [log.error.txt](src/data/log.error.txt) file.
+- For proxy connection errors, the system will retry every 30 seconds. You can set the retry limit by adjusting the `MAX_RETRY_PROXY = 20` variable in the [index.js](src/run/index.js) file (default is 20). If the retry limit is reached, the system will stop auto-running that account and log the error in [log.error.txt](src/data/log.error.txt).
+- For login failures, the system retries every 60 seconds. Adjust the retry limit with the `MAX_RETRY_LOGIN = 20` variable in the [index.js](src/run/index.js) file (default is 20). Errors will be logged in [log.error.txt](src/data/log.error.txt) after too many retries.
 
 ## 🔄 Update History
 
-> When updating to a new version, simply copy the 📁 [data](src/data) folder from the old version and overwrite it in the new version to run without needing to retrieve the data again.
+> To update to a new version, simply copy the 📁 [data](src/data) folder from the old version and overwrite it in the new version.
 
-> Latest version: `v0.1.6`
+> Latest version: `v0.1.7`
 
+<details>
+<summary>v0.1.7 - 📅 16/10/2024</summary>
+  
+- Changed game time settings (default now always plays games)
+</details>
 <details>
 <summary>v0.1.6 - 📅 16/10/2024</summary>
   
-- Fixed gaming issues
-- Added dog collection (DOGS) while playing
+- Fixed gameplay issue
+- Added DOGS collection during gameplay
 </details>
 <details>
 <summary>v0.1.5 - 📅 12/10/2024</summary>
   
-- Temporarily removed game playing, will fix later
+- Temporarily skipped gameplay, will fix later
 </details>
 <details>
 <summary>v0.1.4 - 📅 25/09/2024</summary>
   
-- Temporarily removed task completion due to server errors (will automatically reopen when the server stabilizes)
+- Temporarily skipped tasks due to server issues (will automatically resume when server stabilizes)
 </details>
 <details>
 <summary>v0.1.3 - 📅 19/09/2024</summary>
   
-- Fixed task completion errors
+- Fixed task completion bug
 </details>
 <details>
 <summary>v0.1.2 - 📅 18/09/2024</summary>
   
-- Added tasks for X Empire
+- Added X Empire tasks
 </details>
 <details>
 <summary>v0.1.1 - 📅 14/09/2024</summary>
   
-- Fixed continuous loop errors
+- Fixed continuous loop bug
 - Added system notifications and version checks
-- Added time limits for game playing to avoid lag times; by default, can only play from 1 AM to 1 PM (Vietnam time UTC+7).
+- Added game time limits to avoid server lag; by default, the game only runs from 1 AM to 1 PM (UTC+7)
 </details>
 <details>
 <summary>v0.1.0 - 📅 14/09/2024</summary>
   
-- Added weekly task completion
+- Added weekly tasks
 </details>
 <details>
 <summary>v0.0.9 - 📅 13/09/2024</summary>
   
-- Fixed GitHub server request spamming errors
+- Fixed GitHub server request spam issue
 </details>
 <details>
 <summary>v0.0.8 - 📅 13/09/2024</summary>
   
-- Fixed data retrieval issues from the server
+- Fixed data retrieval from the server
 </details>
 <details>
 <summary>v0.0.7 - 📅 13/09/2024</summary>
   
-- Fixed failed task listing issues
-- Supported Promo task completion
-- Added countdown to the next run
-- Automatically retrieves answer data from the server every 20-40 minutes
+- Fixed task list retrieval failure
+- Added Promo tasks
+- Countdown until the next run
+- Automatically fetch data from the server every 20-40 minutes
 </details>
 <details>
 <summary>v0.0.6 - 📅 11/09/2024</summary>
   
-- Added automatic completion of tasks requiring answers (due to Blum server instability, the first attempt may fail; just wait for it to come back online)
-- Fixed check-in functionality to display correct status and rewards during check-in
-- Fixed automatic claim for invite points
-- Fixed failed task listing issues
+- Added automatic task completion for questions (Blum server instability may cause errors, just let it retry)
+- Fixed check-in (displaying correct status and rewards)
+- Fixed auto-claim for invite points
+- Fixed task list retrieval failure
 </details>
 <details>
 <summary>v0.0.5 - 📅 08/09/2024</summary>
   
 - Added retry limit mechanism for proxy/login errors
-- Logged errors into the log file when retries exceed the set number for easier tracking when running multiple accounts
-- Accurately updated game tickets after check-in
+- Logged errors for easier tracking when running multiple accounts
+- Updated game pass count after check-in
 </details>
 <details>
 <summary>v0.0.4 - 📅 07/09/2024</summary>
@@ -157,7 +157,7 @@ Sure! Here’s the translated version of your text:
 <details>
 <summary>v0.0.2 - 📅 02/09/2024</summary>
   
-- Adjusted game point rewards to match reality (from 180 - 200)
+- Adjusted game points to match reality (from 180 - 200)
 </details>
 <details>
 <summary>v0.0.1 - 📅 02/09/2024</summary>
@@ -167,9 +167,9 @@ Sure! Here’s the translated version of your text:
 
 ## 🎁 Donate
 
-We are happy to share scripts and source code resources for free with the airdrop community. If you find our tools and documentation useful and want to support us in continuing to develop and maintain these projects, you can donate to support us.
+We are happy to share free scripts and resources with the airdrop community. If you find our tools and documentation useful and would like to support us in further development and maintenance, you can contribute by donating.
 
-Every contribution will help us maintain the quality of our services and continue providing valuable resources for the airdrop community. We sincerely thank you for your support!
+Every donation helps us maintain quality service and continue providing valuable resources to the airdrop community. We sincerely appreciate your support!
 
 Much love 😘😘😘
 
@@ -177,5 +177,3 @@ Much love 😘😘😘
   <img src="https://raw.githubusercontent.com/zuydd/image/main/qr-momo.png" alt="QR Momo" height="340" />
   <img src="https://raw.githubusercontent.com/zuydd/image/main/qr-binance.jpg" alt="QR Binance" height="340" />
 </div>
-
----
