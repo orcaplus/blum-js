@@ -23,7 +23,6 @@ export class HttpService {
       "Accept-Language": "vi-VN,vi;q=0.9",
       "Accept-Encoding": "gzip, deflate, br",
       "Sec-Fetch-Mode": "cors",
-      // Host: "tgapp-api.matchain.io",
       Origin: "https://telegram.blum.codes",
       "User-Agent":
         "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
@@ -82,7 +81,7 @@ export class HttpService {
 
   async checkProxyIP() {
     if (!this.proxy || this.proxy === "skip") {
-      this.log.updateIp("🖥️");
+      this.log.updateIp("🖥️"); // Update IP to a default value
       return null;
     }
     try {
@@ -92,14 +91,14 @@ export class HttpService {
       });
       if (response.status === 200) {
         const ip = response.data.ip;
-        this.log.updateIp(ip);
+        this.log.updateIp(ip); // Update the logged IP
         return ip;
       } else {
-        throw new Error("Proxy lỗi, kiểm tra lại kết nối proxy");
+        throw new Error("Proxy error, check the proxy connection");
       }
     } catch (error) {
-      this.log.updateIp("🖥️");
-      return -1;
+      this.log.updateIp("🖥️"); // Update IP to a default value on error
+      return -1; // Return error status
     }
   }
 }
