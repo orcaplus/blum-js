@@ -1,175 +1,181 @@
+Sure! Here’s the translated version of your text:
+
+---
+
 ![Blum banner](https://raw.githubusercontent.com/zuydd/image/main/blum.jpeg)
 
-# Tool Auto Blum NodeJS by ZuyDD
+# Auto Blum NodeJS Tool by ZuyDD
 
-**Tool phát triển và chia sẻ miễn phí bởi ZuyDD**
+**Developed and shared for free by ZuyDD**
 
 <a href="https://www.facebook.com/zuy.dd"><img src="https://raw.githubusercontent.com/zuydd/image/main/facebook.svg" alt="Facebook"></a>
 <a href="https://t.me/zuydd"><img src="https://raw.githubusercontent.com/zuydd/image/main/telegram.svg" alt="Telegram"></a>
 
 > [!WARNING]
-> Mọi hành vi buôn bán tool dưới bất cứ hình thức nào đều không được cho phép!
+> Any trading of the tool in any form is not permitted!
 
-## 🛠️ Hướng dẫn cài đặt
+## 🛠️ Installation Guide
 
-> Yêu cầu đã cài đặt NodeJS
+> Requires NodeJS installed
 
-- Bước 1: Tải về phiên bản mới nhất của tool [tại đây ⬇️](https://github.com/zuydd/blum/archive/refs/heads/main.zip)
-- Bước 2: Giải nén tool
-- Bước 3: Tại thư mục tool vừa giải nén (thư mục có chứa file package.json), chạy lệnh `npm install` để cài đặt các thư viện bổ trợ
+- Step 1: Download the latest version of the tool [here ⬇️](https://github.com/zuydd/blum/archive/refs/heads/main.zip)
+- Step 2: Unzip the tool
+- Step 3: In the unzipped tool folder (the folder containing the package.json file), run the command `npm install` to install the supporting libraries.
 
-## 💾 Cách thêm dữ liệu tài khoản
+## 💾 How to Add Account Data
 
-> Tool hỗ trợ cả `user` và `query_id` (khuyến khích dùng query_id)
+> The tool supports both `user` and `query_id` (query_id is recommended)
 
-> Tất cả dữ liệu mà bạn cần nhập đều nằm ở các file trong thư mục 📁 `src / data`
+> All data you need to enter can be found in files in the 📁 `src/data` folder.
 
-- [users.txt](src/data/users.txt) : chứa danh sách `user` hoặc `query_id` của các tài khoản, mỗi dòng ứng với một tài khoản
-- [proxy.txt](src/data/proxy.txt) : chứa danh sách proxy, proxy ở mỗi dòng sẽ ứng với tài khoản ở dòng đó trong file users.txt phía trên, để trống nếu không dùng proxy
-- [token.json](src/data/token.json) : chứa danh sách token được tạo ra từ `user` hoặc `query_id`. Token sẽ được tự động sinh ra khi bạn chạy tool
+- [users.txt](src/data/users.txt): contains the list of `user` or `query_id` for accounts, one account per line.
+- [proxy.txt](src/data/proxy.txt): contains the list of proxies; each line corresponds to the account in the same line in the users.txt file above. Leave blank if not using a proxy.
+- [token.json](src/data/token.json): contains the list of tokens generated from `user` or `query_id`. Tokens will be automatically generated when you run the tool.
 
-> Định dạng proxy: http://user:pass@ip:port
+> Proxy format: http://user:pass@ip:port
 
-## >\_ Các lệnh và chức năng tương ứng
+## >\_ Commands and Corresponding Functions
 
-| Lệnh            | Chức năng                                                                                                                  |
-| --------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `npm run start` | Dùng để chạy farming/claim, làm nhiệm vụ, điểm danh, chơi game, claim điểm invite,.... tóm lại game có gì là nó làm cái đó |
+| Command            | Function                                                                                                                  |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| `npm run start`    | Used to run farming/claiming, completing tasks, checking in, playing games, claiming invite points, etc. Basically, it does whatever the game requires. |
 
-## 🕹️ Các tính năng có trong tool
+## 🕹️ Features in the Tool
 
-- tự động điểm danh hàng ngày
-- tự động tham gia tribe để nhận thêm 10% điểm thưởng
-- tự động làm nhiệm vụ
-- tự động farming/claim khi tới giờ
-- tự động chơi game
-- claim điểm invite
-- nhận diện proxy tự động, tự động kết nối lại proxy khi bị lỗi. ae ai chạy proxy thì thêm vào file proxy.txt ở dòng ứng với dòng chứa acc muốn chạy proxy đó, acc nào không muốn chạy proxy thì để trống hoặc gõ skip vào
-- đa luồng chạy bao nhiêu acc cũng được, không bị block lẫn nhau
-- cài đặt thời gian chơi game, mặc định có thể chơi game từ 1h sáng đến 13h trưa (giờ Việt Nam UTC+7). Có thể tìm biến `TIME_PLAY_GAME = [1, 13]` để thay đổi khung giờ chơi game
+- Automatically checks in daily
+- Automatically joins a tribe to receive an additional 10% reward points
+- Automatically completes tasks
+- Automatically farms/claims when the time comes
+- Automatically plays games
+- Claims invite points
+- Automatically detects proxies, reconnects when there's an error. If you’re using proxies, add them to the proxy.txt file corresponding to the line with the account you want to run with that proxy. Leave blank or type "skip" for accounts that don’t need a proxy.
+- Multi-threaded, can run as many accounts as you want without blocking each other.
+- Set game playing times; by default, it can play from 1 AM to 1 PM (Vietnam time UTC+7). You can find the variable `TIME_PLAY_GAME = [1, 13]` to change the playing hours.
 
 > [!WARNING]
 >
-> - Nếu gặp lỗi đăng nhập, làm nhiệm vụ hay chơi game thì là do server của blum nó lỏ chứ không phải lỗi tool, cứ kệ nó, hồi nó quay lại làm sau khi hết lỗi.
-> - Vì server nó hay lỗi vào khung giờ 14h-24h nên khuyến khích ae chạy tool lần đầu vào khung giờ 4h-12h để chạy mượt mà nhé
+> - If you encounter login, task completion, or gaming errors, it's due to the Blum server issues, not the tool's fault. Just wait for it to come back to normal.
+> - Since the server often has issues between 2 PM - 12 AM, it’s recommended to run the tool for the first time between 4 AM - 12 PM for smoother operation.
 
-## ♾ Cài đặt đa luồng
+## ♾ Multi-threaded Setup
 
-- Mặc định tool sẽ chạy đa luồng ứng với số tài khoản bạn nhập vào, không cần cài đặt thêm gì cả.
-- Mặc định ở vòng lặp đầu tiên mỗi tài khoản (luồng) sẽ chạy cách nhau 30s để tránh spam request, có thể tìm biến `DELAY_ACC = 10` trong file [index.js](src/run/index.js) để điều chỉnh cho phù hợp
+- By default, the tool will run multi-threaded according to the number of accounts you enter, with no additional setup required.
+- In the first loop, each account (thread) will run 30 seconds apart to avoid spam requests. You can find the variable `DELAY_ACC = 10` in the [index.js](src/run/index.js) file to adjust as needed.
 
-## ❌ Chế độ thử lại khi lỗi
+## ❌ Retry Mode on Errors
 
-- Đỗi với lỗi kết nối proxy, hệ thống sẽ cố thử lại sau mỗi 30s, bạn có thể cài đặt giới hạn số lần thử lại bằng cách tìm biến `MAX_RETRY_PROXY = 20` trong file [index.js](src/run/index.js) để điều chỉnh cho phù hợp (mặc định là 20). Khi quá số lần thử kết nối lại hệ thống sẽ dừng auto tài khoản đó và nghi nhận lỗi vào file [log.error.txt](src/data/log.error.txt)
-- Đỗi với lỗi đăng nhập thất bại, hệ thống sẽ cố thử lại sau mỗi 60s, bạn có thể cài đặt giới hạn số lần thử lại bằng cách tìm biến `MAX_RETRY_LOGIN = 20` trong file [index.js](src/run/index.js) để điều chỉnh cho phù hợp (mặc định là 20). Khi quá số lần thử đăng nhập lại hệ thống sẽ dừng auto tài khoản đó và nghi nhận lỗi vào file [log.error.txt](src/data/log.error.txt)
+- For proxy connection errors, the system will attempt to retry every 30 seconds. You can set the maximum retry limit by finding the variable `MAX_RETRY_PROXY = 20` in the [index.js](src/run/index.js) file to adjust as needed (default is 20). When the retry limit is exceeded, the system will stop auto for that account and log the error in the [log.error.txt](src/data/log.error.txt) file.
+- For failed login errors, the system will attempt to retry every 60 seconds. You can set the maximum retry limit by finding the variable `MAX_RETRY_LOGIN = 20` in the [index.js](src/run/index.js) file to adjust as needed (default is 20). When the retry limit is exceeded, the system will stop auto for that account and log the error in the [log.error.txt](src/data/log.error.txt) file.
 
-## 🔄 Lịch sử cập nhật
+## 🔄 Update History
 
-> Khi cập nhật phiên bản mới chỉ cần copy thư mục 📁 [data](src/data) của bản cũ ghi đè lại ở bản mới là có thể chạy được mà không cần lấy lại data
+> When updating to a new version, simply copy the 📁 [data](src/data) folder from the old version and overwrite it in the new version to run without needing to retrieve the data again.
 
-> Phiên bản mới nhất: `v0.1.6`
+> Latest version: `v0.1.6`
 
 <details>
 <summary>v0.1.6 - 📅 16/10/2024</summary>
   
-- Fix lỗi chơi game
-- Thêm nhặt chó (DOGS) khi chơi game
+- Fixed gaming issues
+- Added dog collection (DOGS) while playing
 </details>
 <details>
 <summary>v0.1.5 - 📅 12/10/2024</summary>
   
-- Tạm bỏ qua chơi game, sẽ fix sau
+- Temporarily removed game playing, will fix later
 </details>
 <details>
 <summary>v0.1.4 - 📅 25/09/2024</summary>
   
-- Tạm bỏ qua làm nhiệm vụ do server lỗi (sẽ tự động mở lại khi server ổn định)
+- Temporarily removed task completion due to server errors (will automatically reopen when the server stabilizes)
 </details>
 <details>
 <summary>v0.1.3 - 📅 19/09/2024</summary>
   
-- Fix lỗi làm nhiệm vụ
+- Fixed task completion errors
 </details>
 <details>
 <summary>v0.1.2 - 📅 18/09/2024</summary>
   
-- Thêm làm nhiệm vụ X Empire
+- Added tasks for X Empire
 </details>
 <details>
 <summary>v0.1.1 - 📅 14/09/2024</summary>
   
-- Fix lỗi vòng lặp liên tục
-- Thêm thông báo từ hệ thống và kiểm tra version
-- Thêm giới hạn thời gian chơi game tránh lúc server bị lag, mặc định chỉ chơi game từ 1h sáng đến 13h trưa (giờ Việt Nam UTC+7).
+- Fixed continuous loop errors
+- Added system notifications and version checks
+- Added time limits for game playing to avoid lag times; by default, can only play from 1 AM to 1 PM (Vietnam time UTC+7).
 </details>
 <details>
 <summary>v0.1.0 - 📅 14/09/2024</summary>
   
-- Thêm làm nhiệm vụ weekly
+- Added weekly task completion
 </details>
 <details>
 <summary>v0.0.9 - 📅 13/09/2024</summary>
   
-- Sửa lỗi spam request server github
+- Fixed GitHub server request spamming errors
 </details>
 <details>
 <summary>v0.0.8 - 📅 13/09/2024</summary>
   
-- Fix lỗi lấy data từ server
+- Fixed data retrieval issues from the server
 </details>
 <details>
 <summary>v0.0.7 - 📅 13/09/2024</summary>
   
-- Fix lỗi lấy danh sách nhiệm vụ thất bại
-- Hỗ trợ làm nhiệm vụ Promo
-- Thêm đếm ngược đến lần chạy tiếp theo
-- Tự động lấy data câu trả lời từ server sau mỗi 20-40 phút
+- Fixed failed task listing issues
+- Supported Promo task completion
+- Added countdown to the next run
+- Automatically retrieves answer data from the server every 20-40 minutes
 </details>
 <details>
 <summary>v0.0.6 - 📅 11/09/2024</summary>
   
-- Thêm tự động làm các task yêu cầu trả lời câu hỏi (do server blum không ổn định nên có thể lần đầu làm sẽ bị lỗi, mọi người cứ kệ nó để hồi nó quay lại làm là được)
-- Sửa lỗi chức năng điểm danh (checkin) hiển thị đúng trạng thái và phần thưởng khi điểm danh
-- Sửa lỗi không tự động claim điểm giới thiệu
-- Fix lỗi lấy danh sách nhiệm vụ thất bại
+- Added automatic completion of tasks requiring answers (due to Blum server instability, the first attempt may fail; just wait for it to come back online)
+- Fixed check-in functionality to display correct status and rewards during check-in
+- Fixed automatic claim for invite points
+- Fixed failed task listing issues
 </details>
 <details>
 <summary>v0.0.5 - 📅 08/09/2024</summary>
   
-- Thêm cơ chế giới hạn số lần thử lại khi lỗi proxy/đăng nhập
-- Ghi nhận lỗi vào file log khi thử lại quá số lần cài đặt để các bạn chạy nhiều acc tiện theo dõi
-- Cập nhật chính xác số vé chơi game sau khi checkin
+- Added retry limit mechanism for proxy/login errors
+- Logged errors into the log file when retries exceed the set number for easier tracking when running multiple accounts
+- Accurately updated game tickets after check-in
 </details>
 <details>
 <summary>v0.0.4 - 📅 07/09/2024</summary>
   
-- Cập nhật lại data task, fix lỗi không làm task
+- Updated task data, fixed task completion issues
 </details>
 <details>
 <summary>v0.0.3 - 📅 05/09/2024</summary>
   
-- Thay đổi API login
+- Changed login API
 </details>
 <details>
 <summary>v0.0.2 - 📅 02/09/2024</summary>
   
-- Điều chỉnh điểm point chơi game về đúng với thực tế (từ 180 - 200)
+- Adjusted game point rewards to match reality (from 180 - 200)
 </details>
 <details>
 <summary>v0.0.1 - 📅 02/09/2024</summary>
   
-- Chia sẽ tool đến cộng đồng
+- Shared the tool with the community
 </details>
 
 ## 🎁 Donate
 
-Chúng tôi rất vui được chia sẻ các mã script và tài nguyên mã nguồn miễn phí đến cộng đồng làm airdrop. Nếu bạn thấy các công cụ và tài liệu của chúng tôi hữu ích và muốn ủng hộ chúng tôi tiếp tục phát triển và duy trì các dự án này, bạn có thể đóng góp hỗ trợ qua hình thức donate.
+We are happy to share scripts and source code resources for free with the airdrop community. If you find our tools and documentation useful and want to support us in continuing to develop and maintain these projects, you can donate to support us.
 
-Mỗi đóng góp của bạn sẽ giúp chúng tôi duy trì chất lượng dịch vụ và tiếp tục cung cấp những tài nguyên giá trị cho cộng đồng làm airdrop. Chúng tôi chân thành cảm ơn sự hỗ trợ và ủng hộ của bạn!
+Every contribution will help us maintain the quality of our services and continue providing valuable resources for the airdrop community. We sincerely thank you for your support!
 
-Mãi iu 😘😘😘
+Much love 😘😘😘
 
 <div style="display: flex; gap: 20px;">
   <img src="https://raw.githubusercontent.com/zuydd/image/main/qr-momo.png" alt="QR Momo" height="340" />
   <img src="https://raw.githubusercontent.com/zuydd/image/main/qr-binance.jpg" alt="QR Binance" height="340" />
 </div>
+
+---
