@@ -18,20 +18,20 @@ class GameService {
 
       if (data) {
         user.log.log(
-          `Started playing the game, rewards will be received after: ${colors.blue(
+          `Start the game, finish it and get your reward later: ${colors.blue(
             delay + "s"
           )}`
         );
         return data.gameId;
       } else {
-        throw new Error(`Game failed: ${data.message}`);
+        throw new Error(`Play game fail: ${data.message}`);
       }
     } catch (error) {
       if (error.response?.data?.message === "not enough play passes") {
         return 2;
       } else {
         user.log.logError(
-          `Game failed: ${error.response?.data?.message}`
+          `Play game fail: ${error.response?.data?.message}`
         );
       }
       return null;
@@ -39,7 +39,7 @@ class GameService {
   }
 
   async claimGame(user, gameId, eligibleDogs) {
-    let points = generatorHelper.randomInt(180, 200);
+    let points = generatorHelper.randomInt(110, 145);
     let dogs = 0;
     if (eligibleDogs) {
       points = generatorHelper.randomInt(90, 110);
@@ -54,17 +54,17 @@ class GameService {
       const { data } = await user.http.post(5, "game/claim", body);
       if (data) {
         user.log.log(
-          `Game finished, rewards: ${colors.green(
+          `Play the game, reward: ${colors.green(
             points + user.currency
           )}${eligibleDogs ? ` - ${dogs} 🦴` : ""}`
         );
         return true;
       } else {
-        throw new Error(`Game reward claim failed: ${data.message}`);
+        throw new Error(`Get reward for failed game play: ${data.message}`);
       }
     } catch (error) {
       user.log.logError(
-        `Game reward claim failed: ${error.response?.data?.message}`
+        `Get reward for failed game play: ${error.response?.data?.message}`
       );
       return false;
     }
@@ -88,7 +88,7 @@ class GameService {
       });
 
       if (data.payload) return data.payload;
-      throw new Error(`Payload creation failed: ${data?.error}`);
+      throw new Error(`Payload generation failed: ${data?.error}`);
     } catch (error) {
       console.log(colors.red(error.response.data.error));
       return null;
@@ -105,13 +105,13 @@ class GameService {
   }
 
   checkTimePlayGame(time) {
-    // Get current hour in Vietnam timezone (UTC+7)
+    // Lấy giờ hiện tại theo múi giờ Việt Nam (UTC+7)
     const nowHour = dayjs().hour();
     return !time.includes(nowHour);
   }
 
   getMinutesUntilNextStart(times) {
-    // Get current hour in Vietnam timezone (UTC+7)
+    // Lấy giờ hiện tại theo múi giờ Việt Nam (UTC+7)
     const currentHour = dayjs().hour();
     times.sort((a, b) => a - b);
 
@@ -128,7 +128,7 @@ class GameService {
       .set("minute", 0)
       .set("second", 0);
 
-    // Calculate minutes from current time to the next game start
+    // Tính số phút từ giờ hiện tại đến lần bắt đầu tiếp theo
     return nextStartTime.diff(now, "minute");
   }
 
@@ -139,9 +139,9 @@ class GameService {
       if (profile) playPasses = profile?.playPasses;
       const eligibleDogs = await this.eligibilityDogs(user);
       const textDropDogs =
-        (eligibleDogs ? "can" : "cannot") + " collect DOGS 🦴";
+        (eligibleDogs ? "maybe" : "cannot") + " picked DOGS 🦴";
       user.log.log(
-        `Remaining ${colors.blue(playPasses + " game plays")} ${colors.magenta(
+        `Still ${colors.blue(playPasses + " turn")} play game ${colors.magenta(
           `[${textDropDogs}]`
         )}`
       );
@@ -170,14 +170,14 @@ class GameService {
         }
       }
       if (playPasses > 0)
-        user.log.log(colors.magenta("All game plays used up"));
+        user.log.log(colors.magenta("games all turned used"));
       return -1;
     } else {
       const minutesUntilNextStart = this.getMinutesUntilNextStart(timePlayGame);
       user.log.log(
         colors.yellow(
-          `Game cannot be played during this time, next play in: ${colors.blue(
-            minutesUntilNextStart + " minutes"
+          `Installed game cannot be played during this period, next play after: ${colors.blue(
+            minutesUntilNextStart + " minute"
           )}`
         )
       );
