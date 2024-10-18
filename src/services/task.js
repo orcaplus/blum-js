@@ -21,7 +21,7 @@ class TaskService {
       if (data?.length) {
         return data;
       } else {
-        throw new Error(`Failed to retrieve task list: ${data?.message}`);
+        throw new Error(`Get list of failed tasks: ${data?.message}`);
       }
     } catch (error) {
       return -1;
@@ -42,28 +42,27 @@ class TaskService {
           : "READY_FOR_CLAIM";
       } else {
         throw new Error(
-          `Failed to start task ${colors.blue(taskName)}: ${data?.message}`
+          `Do the task ${colors.blue(taskName)} failure: ${data?.message}`
         );
       }
     } catch (error) {
       user.log.logError(
-        `Failed to start task ${colors.blue(taskName)} - ${colors.gray(
+        `Do the task ${colors.blue(taskName)} - ${colors.gray(
           `[${task.id}]`
-        )}: ${error.response?.data?.message}`
+        )} failure: ${error.response?.data?.message}`
       );
       return "NOT_STARTED";
     }
   }
-
   async verifyTask(user, task) {
     let taskName = task.title;
     const param = `tasks/${task.id}/validate`;
     if (!user?.database?.tasks) {
       user.log.log(
         colors.yellow(
-          `Task ${colors.blue(
+          `Mission ${colors.blue(
             taskName
-          )} has no answer yet, please try again later`
+          )} no answer yet, please try again later`
         )
       );
       return;
@@ -72,9 +71,9 @@ class TaskService {
     if (!taskDatabase) {
       user.log.log(
         colors.yellow(
-          `Task ${colors.blue(
+          `Mission ${colors.blue(
             taskName
-          )} has no answer yet, please try again later`
+          )} no answer yet, please try again later`
         )
       );
       return;
@@ -87,14 +86,16 @@ class TaskService {
         return "READY_FOR_CLAIM";
       } else {
         throw new Error(
-          `Failed to verify task ${colors.blue(taskName)}: ${data?.message}`
+          `Confirm the mission ${colors.blue(taskName)} failure: ${
+            data?.message
+          }`
         );
       }
     } catch (error) {
       user.log.logError(
-        `Failed to verify task ${colors.blue(taskName)} - ${colors.gray(
+        `Confirm the mission ${colors.blue(taskName)} - ${colors.gray(
           `[${task.id}]`
-        )}: ${error.response?.data?.message}`
+        )} failure: ${error.response?.data?.message}`
       );
       return "NOT_STARTED";
     }
@@ -111,9 +112,9 @@ class TaskService {
       if (data && data.status === "FINISHED") {
         if (showLog) {
           user.log.log(
-            `Successfully completed task ${colors.blue(
+            `Do the task ${colors.blue(
               taskName
-            )}, reward: ${colors.green(
+            )} success, Reward: ${colors.green(
               task.reward + user.currency
             )}`
           );
@@ -121,15 +122,17 @@ class TaskService {
         return true;
       } else {
         throw new Error(
-          `Failed to claim reward for task ${colors.blue(taskName)}: ${data?.message}`
+          `Claim quest rewards ${colors.blue(taskName)} failure: ${
+            data?.message
+          }`
         );
       }
     } catch (error) {
       if (showLog) {
         user.log.logError(
-          `Failed to claim reward for task ${colors.blue(taskName)} - ${colors.gray(
+          `Claim quest rewards ${colors.blue(taskName)} - ${colors.gray(
             `[${task.id}]`
-          )}: ${error.response?.data?.message}`
+          )} failure: ${error.response?.data?.message}`
         );
       }
       return false;
@@ -158,16 +161,16 @@ class TaskService {
 
     if (taskList.length) {
       user.log.log(
-        `There are ${colors.blue(taskList.length)} tasks ${colors.blue(
+        `Still ${colors.blue(taskList.length)} mission ${colors.blue(
           title
-        )} still incomplete`
+        )} unfinished`
       );
     } else {
       user.log.log(
         colors.magenta(
-          `All tasks ${colors.blue(
+          `Completed All Missions ${colors.blue(
             title
-          )} are complete (except skipped manual tasks)`
+          )} (except for the tasks that must be done by hand being overlooked)`
         )
       );
     }
@@ -196,25 +199,25 @@ class TaskService {
 
     if (tasksFilter.length) {
       user.log.log(
-        `There are ${colors.blue(tasksFilter.length)} tasks ${colors.blue(
+        `Still ${colors.blue(tasksFilter.length)} mission ${colors.blue(
           title
-        )} still incomplete`
+        )} unfinished`
       );
     } else {
       user.log.log(
         colors.magenta(
-          `All tasks ${colors.blue(
+          `Completed All Missions ${colors.blue(
             title
-          )} are complete (except skipped manual tasks)`
+          )} (except for the tasks that must be done by hand being overlooked)`
         )
       );
     }
 
     for (const taskParent of tasksFilter) {
       user.log.log(
-        `Starting task ${colors.blue(
+        `Begin do the task ${colors.blue(
           taskParent.title
-        )}, waiting for all sub-tasks to complete to claim reward`
+        )}, Wait to complete all sub-tasks to receive reward`
       );
 
       if (!taskParent?.subTasks) {
@@ -229,17 +232,17 @@ class TaskService {
           // await this.claimTask(user, taskParent);
           user.log.log(
             colors.magenta(
-              `Completed all tasks ${colors.blue(
+              `Completed All Missions ${colors.blue(
                 taskParent.title
-              )} (except skipped manual tasks)`
+              )} (except for the tasks that must be done by hand being overlooked)`
             )
           );
         } else {
           user.log.log(
             colors.yellow(
-              `Not all sub-tasks of task ${colors.blue(
+              `Not completed all sub-tasks, task ${colors.blue(
                 taskParent.title
-              )} are complete`
+              )}`
             )
           );
         }
@@ -272,7 +275,7 @@ class TaskService {
     }
 
     if (tasksErrorStart.length || tasksErrorClaim.length) {
-      user.log.log(colors.magenta("Retrying failed tasks..."));
+      user.log.log(colors.magenta("Re-run failed mission..."));
       for (const task of tasksErrorStart) {
         let complete = task.status;
         if (complete === "NOT_STARTED" && task.type !== "PROGRESS_TARGET") {
@@ -298,7 +301,7 @@ class TaskService {
       if (complete === "FINISHED") {
         countDone++;
         user.log.log(
-          `✔️ Completed task ${colors.blue(
+          `✔️ Mission Completed ${colors.blue(
             nameTaskParent + " --> " + task.title
           )}`
         );
@@ -316,15 +319,15 @@ class TaskService {
         if (statusClaim) {
           countDone++;
           user.log.log(
-            `✔️ Completed task ${colors.blue(
+            `✔️ Mission Completed ${colors.blue(
               nameTaskParent + " --> " + task.title
             )}`
           );
         } else {
           user.log.logError(
-            `❌ Failed to complete task ${colors.blue(
+            `❌ Do the task ${colors.blue(
               nameTaskParent + " --> " + task.title
-            )}`
+            )} failure`
           );
         }
       }
@@ -343,7 +346,7 @@ class TaskService {
     }
 
     if (countGetTask > maxRetryGetTask) {
-      user.log.logError(`Failed to retrieve task list`);
+      user.log.logError(`Get task list failure`);
       return;
     }
 
@@ -355,7 +358,7 @@ class TaskService {
       }
     }
 
-    user.log.log(colors.magenta("All tasks completed"));
+    user.log.log(colors.magenta("Mission accomplished"));
   }
 }
 
