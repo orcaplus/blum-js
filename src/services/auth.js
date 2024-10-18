@@ -62,7 +62,7 @@ class AuthService {
 
   async handleLogin(user) {
     console.log(
-      `============== Running account ${user.index} | ${user.info.fullName.green} ==============`
+      `============== Run Account ${user.index} | ${user.info.fullName.green} ==============`
     );
 
     let info = null;
@@ -80,6 +80,18 @@ class AuthService {
       };
     }
 
+    // if (token && tokenHelper.isExpired(token.access)) {
+    //   info = await this.refresh(user, token.refresh);
+    //   if (info) {
+    //     const profile = await this.handleAfterLogin(user, info);
+
+    //     return {
+    //       status: 1,
+    //       profile,
+    //     };
+    //   }
+    // }
+
     let infoLogin = await this.login(user);
 
     if (infoLogin) {
@@ -90,7 +102,7 @@ class AuthService {
       };
     }
     user.log.logError(
-      "Login process failed, please check your account information (you may need to retrieve a new query_id). The system will attempt to log in again after 60s"
+      "Login failed, please check your account information again (may need to get new query_id). The system will try to login again after 60s."
     );
     return {
       status: 0,
@@ -107,7 +119,7 @@ class AuthService {
       return null;
     } catch (error) {
       user.log.logError(
-        `Failed to retrieve account information: ${error.response?.data?.message}`
+        `Get account information failed: ${error.response?.data?.message}`
       );
       return null;
     }
@@ -135,6 +147,9 @@ class AuthService {
       await this.handleAfterReconnect(user, infoLogin);
       return 1;
     }
+    // user.log.logError(
+    //   "Quá trình kết nối lại thất bại, vui lòng kiểm tra lại thông tin tài khoản (có thể cần phải lấy mới query_id)"
+    // );
     return 0;
   }
 
@@ -148,7 +163,7 @@ class AuthService {
     if (profile) {
       user.log.log(
         colors.green("Login successful: ") +
-          `Points: ${
+          `Score: ${
             colors.green(Math.round(profile?.availableBalance)) + user.currency
           }`
       );
@@ -168,6 +183,10 @@ class AuthService {
     user.http.updateToken(accessToken);
     user.http.updateRefreshToken(refreshToken);
     fileHelper.saveToken(user.info.id, info);
+    // const profile = await this.getProfile(user);
+    // if (profile) {
+    //   user.log.logSuccess("Kết nối lại thành công");
+    // }
   }
 }
 
