@@ -9,7 +9,7 @@ class FarmingClass {
       const { data } = await user.http.post(0, "farming/start", {});
       if (data) {
         user.log.log(
-          `Farming started, waiting to claim later: ${colors.blue("480 phút")}`
+          `Farming started, waiting to claim later: ${colors.blue("480 minute")}`
         );
         return true;
       } else {
